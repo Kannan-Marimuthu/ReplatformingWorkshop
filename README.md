@@ -5,7 +5,7 @@ This material covers the steps to replatform a Struts App called "Movie Fun" to 
 To get started you will need the following prerequisites on your machine.
 
 - [JDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-- [Maven](https://maven.apache.org/download.cgi)
+- [Maven](https://maven.apache.org/download.cgi) & [installation instructions](https://maven.apache.org/install.html)
 - [Cloud Foundry CLI](https://github.com/cloudfoundry/cli#downloads)
 - A Java IDE (e.g. [IntelliJ](https://www.jetbrains.com/idea/download/))
 
