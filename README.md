@@ -13,7 +13,7 @@ To get started you will need the following prerequisites on your machine.
 These labs will be much easier to complete if you use a Java IDE (as opposed to a text editor). All Java IDEs have the ability to auto-import dependencies which provides a much smoother development process. These labs do not provide instructions on imports, so if you must use a text editor you will need to refer to the code solutions often for direction on imports.
 
 # Checking Prerequisites
-The examples shown below, a Windows client and a MacOS client, indicate that both systems have met the first three prerequisites. You should execute the same commands on your machine and correct any errors before proceeding.
+The examples shown below, both for a Windows client and a MacOS client, show client systems have met the first four prerequisites. You should execute the same commands on your machine and correct any errors before proceeding.
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/DOS.jpg)
 
