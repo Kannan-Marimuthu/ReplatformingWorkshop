@@ -34,7 +34,7 @@ Note: if your PCF installation does not have a CA cert you will need to use ````
 Throughout the execution of this workshop, you are encouraged to take a look at the statics and health of your "Movie Fun" App by accessing the [Apps Manager GUI](https://login.sys.testpcf.nwie.net).
 
 # 3 - Let's Start with a simple _cf push_
-First you need to open a Command Window on Windows or a Terminal on Macs, and then create a workspace directory/folder and navigate to it.
+First you need to open a Command Window on your Windows Machine or a Terminal on your Mac, and then create a workspace directory/folder and navigate to it.
 ````
 mkdir workspace
 cd workspace
