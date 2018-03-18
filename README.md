@@ -71,7 +71,7 @@ Once your app is deployed, a route to your running application will be displayed
 cf restage movie-fun
 ````
 - Refresh the movie list page in your browser. What do you notice?
-- The movie list page is now blank because we are using an in-memory [H2 database](http://www.h2database.com/). 
+- The movie list page is now blank because we are using an in-memory [HSQL database](http://hsqldb.org//). 
 - To persist our data we will bind our app to a [MySQL database](https://www.mysql.com/).
 
 # 5 - Create a MySQL DB binding and re-stage the "Movie Fun" App
