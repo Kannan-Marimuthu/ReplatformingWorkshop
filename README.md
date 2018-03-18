@@ -74,7 +74,7 @@ cf restage movie-fun
 - The movie list page is now blank because we are using an in-memory [HSQL database](http://hsqldb.org//). 
 - To persist our data we will bind our app to a [MySQL database](https://www.mysql.com/).
 
-# 5 - Create a MySQL DB binding and re-stage the "Movie Fun" App
+# 5 - Create a MySQL binding & re-stage the "Movie Fun" App
 Your Cloud Foundry installation comes with several on-demand services which you can use:
 ````
 cf marketplace
