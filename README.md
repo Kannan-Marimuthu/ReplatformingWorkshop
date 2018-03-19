@@ -291,10 +291,8 @@ The dependency on [h2](http://www.h2database.com/html/main.html) (an in-memory d
 # 11 - Create the Application class
 Next, create the ````Application```` class which will be the basis of our Spring Boot application.
 
-
 ###### _src/main/java/org/superbiz/moviefun/Application.java_
 ````
-view on GitHub 
 package org.superbiz.moviefun;
 
 import org.springframework.boot.SpringApplication;
@@ -331,10 +329,4 @@ mvn spring-boot:run
 ````
 Navigate to the home page at [localhost:8080](http://localhost:8080/) and check that it returns a 404.
 
-
-
-
-
-
-mvn spring-boot:run
-Navigate to the home page at localhost:8080 and check that it returns a 404.
+![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/404.jpg)
