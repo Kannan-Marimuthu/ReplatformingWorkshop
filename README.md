@@ -128,7 +128,7 @@ We will introduce the [Spring Boot](https://projects.spring.io/spring-boot/) dep
 ````
 - <tomee.version>7.0.2</tomee.version>
 ````
-- Add the Spring Boot Maven plugin inside the ````<build>```` tag:
+- Add the [Spring Boot Maven plugin](http://docs.spring.io/spring-boot/docs/current/reference/html/build-tool-plugins-maven-plugin.html) inside the ````<build>```` tag:
   
 ````
 <plugins>
@@ -139,7 +139,7 @@ We will introduce the [Spring Boot](https://projects.spring.io/spring-boot/) dep
 </plugins>
 ````
 This plugin provides Spring Boot support in Maven, allowing you to package executable jar or war archives and run an application locally.
-- Add the Spring Boot starter parent inside the ````<project>```` tag:
+- Add the [Spring Boot starter parent](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#using-boot-maven) inside the ````<project>```` tag:
   
 ````
 <parent>
@@ -149,11 +149,11 @@ This plugin provides Spring Boot support in Maven, allowing you to package execu
 </parent>
 ````
 The parent will manage versions of all dependencies needed by Spring Boot. We only need to specify the Spring Boot version number on this dependency. When importing additional starters, we can safely omit the version number.
-- Remove the version from javax.servlet, as this is provided by spring-boot-starter-parent.
+- Remove the version from ````javax.servlet````, as this is provided by ````spring-boot-starter-parent````.
 ````
 - <version>1.2</version>
 ````
-- Add the following dependencies after commons-lang.
+- Add the following dependencies after ````commons-lang````.
 ````
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -181,9 +181,9 @@ The parent will manage versions of all dependencies needed by Spring Boot. We on
     <artifactId>mysql-connector-java</artifactId>
 </dependency>
 ````
-The dependency on h2 (an in-memory database) is only introduced for the convenience of this lab. We would normally recommend using a MySQL database for local development in order to get our development environment as close to production as possible.
+The dependency on [h2](http://www.h2database.com/html/main.html) (an in-memory database) is only introduced for the convenience of this lab. We would normally recommend using a MySQL database for local development in order to get our development environment as close to production as possible.
 
-- Remove the spring-web dependency in test scope since it is now provided by spring-boot-starter-web.
+- Remove the ````spring-web```` dependency in test scope since it is now provided by ````spring-boot-starter-web````.
 ````
 - <dependency>
 -     <groupId>org.springframework</groupId>
@@ -289,7 +289,7 @@ The dependency on h2 (an in-memory database) is only introduced for the convenie
 ````
 
 # 11 - Create the Application class
-Next, create the Application class which will be the basis of our Spring Boot application.
+Next, create the ````Application```` class which will be the basis of our Spring Boot application.
 
 
 #### _src/main/java/org/superbiz/moviefun/Application.java_
@@ -308,4 +308,4 @@ public class Application {
     }
 }
 ````
-If you are unfamiliar with Spring Boot, take a minute to read this about the different pieces of the Application class.
+If you are unfamiliar with Spring Boot, take a minute to read [this](https://spring.io/guides/gs/spring-boot/#_create_an_application_class) about the different pieces of the ````Application```` class.
