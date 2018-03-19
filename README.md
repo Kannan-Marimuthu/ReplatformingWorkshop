@@ -376,7 +376,7 @@ spring:
     prefix: /WEB-INF/
     suffix: .jsp
 ````
-This will allow Spring to find our [jsps](https://en.wikipedia.org/wiki/JavaServer_Pages) in the ````WEB-INF```` folder.
+This will allow Spring to find our [Java Server Pages](https://en.wikipedia.org/wiki/JavaServer_Pages) in the ````WEB-INF```` folder.
 
 - Finally, move ````index.jsp```` from the ````webapp/```` folder into the ````webapp/WEB-INF/```` folder.
 
@@ -385,6 +385,8 @@ This will allow Spring to find our [jsps](https://en.wikipedia.org/wiki/JavaServ
 mvn spring-boot:run
 ````
 You will be able to navigate the home page, but other pages will not work yet. We will get the rest working in the upcoming labs.
+
+![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/localhost8080.jpg)
 
 
 
