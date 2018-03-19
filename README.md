@@ -1,7 +1,11 @@
-# Replatforming Workshop
-Movie Fun is a simple movie catalog management application. It is currently implemented using Java Enterprise. It was designed to run on TomEE, and uses EJBs and Servlets. Database configuration is done through JNDI.
-
-In this workshop we will first try to deploy Movie Fun to Cloud Foundry using the TomEE buildpack. We will then replatform Movie Fun by wrapping it in a Spring Boot container. By the end of the lab we will have a cloud-ready, working application deployed to Cloud Foundry.
+# Pivotal Cloud Foundry Familiarization and Replatforming Workshop
+- This Workshop assumes you have a Java Development background & no knowledge of [Pivotal Cloud Foundry](https://www.youtube.com/watch?v=7APZD0me1nU).
+- During this workshop you will _cf push_ applications to run on Nationwide's own PCF test instance.
+- You will log into PCF using your single-sign-on credentials and push a simple Chess application to get situated.
+- You will then proceed with "Movie Fun", a movie catalog management application implemented using Java Enterprise. "Movie-Fun" was designed to run on TomEE. It uses EJBs and Servlets. The Database configuration is done through JNDI.
+- In this workshop you will first deploy Movie Fun to PCF using the [TomEE buildpack](https://github.com/cloudfoundry-community/tomee-buildpack). 
+- We will then replatform Movie Fun by wrapping it in a [Spring Boot](https://projects.spring.io/spring-boot/) container. 
+- By the end of the lab we will have a cloud-ready, working application deployed to Cloud Foundry.
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/ReplatformNModernize.jpg)
 
@@ -13,10 +17,11 @@ To get started you will need the following prerequisites on your machine.
 - [Cloud Foundry CLI](https://github.com/cloudfoundry/cli#downloads)
 - [Git](https://git-scm.com/downloads)
 - A Java IDE (e.g. [Eclipse Neon](http://www.eclipse.org/downloads/packages/release/Neon/3) or [IntelliJ](https://www.jetbrains.com/idea/download/))
+- [CNTLM](https://spot.nwie.net/site/iMedia/RUN/ops/Wiki%20Pages/CNTLM_Setup.aspx).
 
 These labs will be much easier to complete if you use a Java IDE (as opposed to a text editor). All Java IDEs have the ability to auto-import dependencies which provides a much smoother development process. These labs do not provide instructions on imports, so if you must use a text editor you will need to refer to the code solutions often for direction on imports.
 
-# Checking Prerequisites
+# Checking some of the Prerequisites
 The examples shown below, both for a Windows client and a MacOS client, show client systems have met the first four prerequisites. You should execute the same commands on your machine and correct any errors before proceeding.
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/DOS.jpg)
@@ -24,15 +29,18 @@ The examples shown below, both for a Windows client and a MacOS client, show cli
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/Mac.jpg)
 
 # 1 - Connect to Cloud Foundry
-Once you have installed the Cloud Foundry CLI you will need to log in to the correct organization and space for this lab with the following command
+Once you have installed the Cloud Foundry CLI you will need to log in to the correct organization and space for this lab with the following commands:
 ````
 cf api api.sys.testpcf.nwie.net 
 cf login
-Email> Your.Email@nationwide.com
-Password> enter_your_SSO_password
+Email> Your-Nationwide-Username
+Password> enter_your_usual_password
 ````
-Ask your facilitator for the appropriate username, org, and space.
-Note: if your PCF installation does not have a CA cert you will need to use ````cf api api.sys.testpcf.nwie.net --skip-ssl-validation````.
+Ask your facilitator for help if you cannot easily log into PCF.
+Notes:
+- If your PCF installation does not have a CA cert you will need to use ````cf api api.sys.testpcf.nwie.net --skip-ssl-validation````.
+- If you try to use a `git bash` window the `cf cli` commands will not work properly
+- Your Username will be granted OrgManager, SpaceManager and SpaceDeveloper roles in an isolated, multitenant PCF environment.
 
 # 2 - Apps Manager
 Throughout the execution of this workshop, you are encouraged to take a look at the statics and health of your "Movie Fun" App by accessing the [Apps Manager GUI](https://login.sys.testpcf.nwie.net).
@@ -43,7 +51,7 @@ Open a Terminal Window on your local machine, then create a workspace directory,
 mkdir workspace
 cd workspace
 ````
-Clone the Chess App from GitHub and _cf push_ it using the following commands:
+Clone the Chess App from GitHub and _cf push_ it using the commands shown below. If you are unable to use _git clone_ you can download the zip version of the same content from here.
 ````
 git clone https://github.com/Pivotal-Field-Engineering/chess
 cd chess
