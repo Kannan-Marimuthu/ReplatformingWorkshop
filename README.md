@@ -1,5 +1,6 @@
 # Replatforming Workshop
 Movie Fun is a simple movie catalog management application. It is currently implemented using Java Enterprise. It was designed to run on TomEE, and uses EJBs and Servlets. Database configuration is done through JNDI.
+
 In this workshop we will first try to deploy Movie Fun to Cloud Foundry using the TomEE buildpack. We will then replatform Movie Fun by wrapping it in a Spring Boot container. By the end of the lab we will have a cloud-ready, working application deployed to Cloud Foundry.
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/ReplatformNModernize.jpg)
@@ -37,7 +38,7 @@ Note: if your PCF installation does not have a CA cert you will need to use ````
 Throughout the execution of this workshop, you are encouraged to take a look at the statics and health of your "Movie Fun" App by accessing the [Apps Manager GUI](https://login.sys.testpcf.nwie.net).
 
 # 3 - Let's Start with a simple _cf push_
-First you need to open a Command Window on your Windows Machine or a Terminal on your Mac, and then create a workspace directory/folder and navigate to it.
+Open a Terminal Window on your local machine, then create a workspace directory, and navigate to it.
 ````
 mkdir workspace
 cd workspace
@@ -94,7 +95,7 @@ cf start movie-fun
 - The movie list page is now blank because we are using an in-memory [HSQL database](http://hsqldb.org//). 
 - To persist our data we will bind our app to a [MySQL database](https://www.mysql.com/).
 
-# 7 - Create a MySQL binding & re-stage "Movie Fun"
+# 7 - Create a MySQL binding & restage "Movie Fun"
 Your Cloud Foundry installation comes with several on-demand services which you can use:
 ````
 cf marketplace
@@ -391,5 +392,307 @@ You will be able to navigate the [home page](http://localhost:8080), but other p
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/localhost8080.jpg)
 
-# 14 - 
+# 14 - Make MoviesBean injectable
+Let's add more functionality to our Spring Boot app by mapping the setup endpoint. Begin by making the ````MoviesBean```` injectable.
+
+- Remove the persistence unit specification from the ````@PersistenceContext```` annotation.
+
+- Replace ````@Stateless```` with ````@Repository````:
+````
+- @Stateless
++ @Repository
+public class MoviesBean {
+
+-    @PersistenceContext(unitName = "movie-unit")
++    @PersistenceContext
+    private EntityManager entityManager;
+
+    //...
+}
+````
+MovieBeans.java should now look like this:
+###### _src/main/java/org/superbiz/moviefun/MoviesBean.java_
+````
+src/main/java/org/superbiz/moviefun/MoviesBean.java
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.superbiz.moviefun;
+
+import org.springframework.stereotype.Repository;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
+import javax.persistence.metamodel.EntityType;
+import java.util.List;
+
+@Repository
+public class MoviesBean {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    public Movie find(Long id) {
+        return entityManager.find(Movie.class, id);
+    }
+
+    public void addMovie(Movie movie) {
+        entityManager.persist(movie);
+    }
+
+    public void editMovie(Movie movie) {
+        entityManager.merge(movie);
+    }
+
+    public void deleteMovie(Movie movie) {
+        entityManager.remove(movie);
+    }
+
+    public void deleteMovieId(long id) {
+        Movie movie = entityManager.find(Movie.class, id);
+        deleteMovie(movie);
+    }
+
+    public List<Movie> getMovies() {
+        CriteriaQuery<Movie> cq = entityManager.getCriteriaBuilder().createQuery(Movie.class);
+        cq.select(cq.from(Movie.class));
+        return entityManager.createQuery(cq).getResultList();
+    }
+
+    public List<Movie> findAll(int firstResult, int maxResults) {
+        CriteriaQuery<Movie> cq = entityManager.getCriteriaBuilder().createQuery(Movie.class);
+        cq.select(cq.from(Movie.class));
+        TypedQuery<Movie> q = entityManager.createQuery(cq);
+        q.setMaxResults(maxResults);
+        q.setFirstResult(firstResult);
+        return q.getResultList();
+    }
+
+    public int countAll() {
+        CriteriaQuery<Long> cq = entityManager.getCriteriaBuilder().createQuery(Long.class);
+        Root<Movie> rt = cq.from(Movie.class);
+        cq.select(entityManager.getCriteriaBuilder().count(rt));
+        TypedQuery<Long> q = entityManager.createQuery(cq);
+        return (q.getSingleResult()).intValue();
+    }
+
+    public int count(String field, String searchTerm) {
+        CriteriaBuilder qb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> cq = qb.createQuery(Long.class);
+        Root<Movie> root = cq.from(Movie.class);
+        EntityType<Movie> type = entityManager.getMetamodel().entity(Movie.class);
+
+        Path<String> path = root.get(type.getDeclaredSingularAttribute(field, String.class));
+        Predicate condition = qb.like(path, "%" + searchTerm + "%");
+
+        cq.select(qb.count(root));
+        cq.where(condition);
+
+        return entityManager.createQuery(cq).getSingleResult().intValue();
+    }
+
+    public List<Movie> findRange(String field, String searchTerm, int firstResult, int maxResults) {
+        CriteriaBuilder qb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Movie> cq = qb.createQuery(Movie.class);
+        Root<Movie> root = cq.from(Movie.class);
+        EntityType<Movie> type = entityManager.getMetamodel().entity(Movie.class);
+
+        Path<String> path = root.get(type.getDeclaredSingularAttribute(field, String.class));
+        Predicate condition = qb.like(path, "%" + searchTerm + "%");
+
+        cq.where(condition);
+        TypedQuery<Movie> q = entityManager.createQuery(cq);
+        q.setMaxResults(maxResults);
+        q.setFirstResult(firstResult);
+        return q.getResultList();
+    }
+
+    public void clean() {
+        entityManager.createQuery("delete from Movie").executeUpdate();
+    }
+}
+````
+If you are not familiar with dependency injection in Spring, now is a good time to read [this](http://docs.spring.io/autorepo/docs/spring-boot/current/reference/html/using-boot-spring-beans-and-dependency-injection.html). Note that as of Spring 4.3, you no longer need to specify an explicit injection annotation on beans with a single constructor, so we will omit such annotations in our labs.
+
+# 15 - Update HomeController
+Now enable the ````HomeController```` to setup the application using our newly-configured ````MoviesBean````.
+
+- Inject the ````MoviesBean```` into the ````HomeController````:
+```java
+private final MoviesBean moviesBean;
+
+public HomeController(MoviesBean moviesBean) {
+    this.moviesBean = moviesBean;
+}
+```
+- Create the ````setup```` controller action in ````HomeController```` by adding the following method to the ````HomeController```` class:
+```java
+//...
+@Transactional
+@GetMapping("/setup")
+public String setup(Map<String, Object> model) {
+    moviesBean.addMovie(new Movie("Wedding Crashers", "David Dobkin", "Comedy", 7, 2005));
+    moviesBean.addMovie(new Movie("Starsky & Hutch", "Todd Phillips", "Action", 6, 2004));
+    moviesBean.addMovie(new Movie("Shanghai Knights", "David Dobkin", "Action", 6, 2003));
+    moviesBean.addMovie(new Movie("I-Spy", "Betty Thomas", "Adventure", 5, 2002));
+    moviesBean.addMovie(new Movie("The Royal Tenenbaums", "Wes Anderson", "Comedy", 8, 2001));
+    moviesBean.addMovie(new Movie("Zoolander", "Ben Stiller", "Comedy", 6, 2001));
+    moviesBean.addMovie(new Movie("Shanghai Noon", "Tom Dey", "Comedy", 7, 2000));
+
+    model.put("movies", moviesBean.getMovies());
+
+    return "setup";
+}
+//...
+```
+Make sure to import ````org.springframework.transaction.annotation.Transactional```` for the ````@Transactional```` annotation.
+
+The end result of these changes should look like this:
+
+###### _src/main/java/org/superbiz/moviefun/HomeController.java_
+```java
+package org.superbiz.moviefun;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.Map;
+
+@Controller
+public class HomeController {
+
+    private final MoviesBean moviesBean;
+
+    public HomeController(MoviesBean moviesBean) {
+        this.moviesBean = moviesBean;
+    }
+
+    @GetMapping("/")
+    public String index() {
+        return "index";
+    }
+
+    @Transactional
+    @GetMapping("/setup")
+    public String setup(Map<String, Object> model) {
+        moviesBean.addMovie(new Movie("Wedding Crashers", "David Dobkin", "Comedy", 7, 2005));
+        moviesBean.addMovie(new Movie("Starsky & Hutch", "Todd Phillips", "Action", 6, 2004));
+        moviesBean.addMovie(new Movie("Shanghai Knights", "David Dobkin", "Action", 6, 2003));
+        moviesBean.addMovie(new Movie("I-Spy", "Betty Thomas", "Adventure", 5, 2002));
+        moviesBean.addMovie(new Movie("The Royal Tenenbaums", "Wes Anderson", "Comedy", 8, 2001));
+        moviesBean.addMovie(new Movie("Zoolander", "Ben Stiller", "Comedy", 6, 2001));
+        moviesBean.addMovie(new Movie("Shanghai Noon", "Tom Dey", "Comedy", 7, 2000));
+
+        model.put("movies", moviesBean.getMovies());
+
+        return "setup";
+    }
+}
+```
+
+# 16 - Prepare setup.jsp
+We will now remove setup logic from the `setup.jsp` view since it is now taken care of in the `HomeController`.
+
+- Move `setup.jsp` from the `webapp/` folder into the `webapp/WEB-INF/` folder.
+
+- Next, we will make the following changes to `setup.jsp`
+    - Remove all references to `MoviesBean`.
+    - Update the iteration over `movies` to use `movies` on the `requestScope`.
+    - Clean up some unnecessary code.
+
+- Copy the solution below into your `setup.jsp` to make these changes.
+
+###### _src/main/webapp/WEB-INF/setup.jsp_
+```html
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<c:set var="language" value="${pageContext.request.locale}"/>
+<fmt:setLocale value="${language}"/>
+
+<!DOCTYPE html>
+<html lang="${language}">
+<head>
+    <meta charset="utf-8">
+    <title>Moviefun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="../assets/css/bootstrap.css" rel="stylesheet">
+    <link href="../assets/css/movie.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 60px;
+        }
+    </style>
+    <link href="../assets/css/bootstrap-responsive.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse"
+               data-target=".nav-collapse"> <span class="icon-bar"></span> <span
+                    class="icon-bar"></span> <span class="icon-bar"></span>
+            </a> <a class="brand" href="#">Moviefun</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+    <h1>Moviefun</h1>
+
+    <h2>Seeded Database with the Following movies</h2>
+    <table width="500">
+        <tr>
+            <td><b>Title</b></td>
+            <td><b>Director</b></td>
+            <td><b>Genre</b></td>
+        </tr>
+        <c:forEach items="${requestScope.movies}" var="movie">
+            <tr>
+                <td>${ movie.title }</td>
+                <td>${ movie.director }</td>
+                <td>${ movie.genre }</td>
+            </tr>
+        </c:forEach>
+    </table>
+
+    <h2>Continue</h2>
+    <a href="moviefun">Go to main app</a>
+</div>
+</body>
+</html>
+```
+
+- Now update `index.jsp` to use the new route:
+```html
+- <a href="setup.jsp">Setup</a> - Sets up the application with some sample data<br/>
++ <a href="setup">Setup</a> - Sets up the application with some sample data<br/>
+```
+
+- Run the App
+````
+mvn spring-boot:run
+````
+Test that the app still runs locally. You will be able to navigate the home page and the setup page, but the movies list page still returns a 404.
+
+
 
