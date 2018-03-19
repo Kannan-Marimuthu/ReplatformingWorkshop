@@ -384,9 +384,9 @@ This will allow Spring to find our [Java Server Pages](https://en.wikipedia.org/
 ````
 mvn spring-boot:run
 ````
-You will be able to navigate the home page, but other pages will not work yet. We will get the rest working in the upcoming labs.
+You will be able to navigate the [home page](http://localhost:8080), but other pages will not work yet. We will get the rest working in the upcoming labs.
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/localhost8080.jpg)
 
-
+# 14 - 
 
