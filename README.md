@@ -1017,7 +1017,7 @@ Now it is time to push to Cloud Foundry.
 name: movie-fun
 random-route: true
 path: target/moviefun.war
-buildpack: java_buildpack
+buildpack: java_buildpack_offline
 services:
 - movie-mysql
 ````
