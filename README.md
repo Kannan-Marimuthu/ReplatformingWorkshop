@@ -330,3 +330,61 @@ mvn spring-boot:run
 Navigate to the home page at [localhost:8080](http://localhost:8080/) and check that it returns a 404.
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/404.jpg)
+
+# 13 - Map the index page
+We will use [Spring MVC](https://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html) to re-configure our endpoints.
+
+- First, create the ````HomeController```` class that will load our ````index.jsp````.
+
+###### _src/main/java/org/superbiz/moviefun/HomeController.java_
+````
+package org.superbiz.moviefun;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class HomeController {
+
+    @GetMapping("/")
+    public String index() {
+        return "index";
+    }
+}
+````
+If you are unfamiliar with Spring MVC, take some time to read [this](https://spring.io/guides/gs/serving-web-content/#initial) about Spring MVC controllers.
+
+- Next, update application.yml with view rendering config, add:
+````
+spring:
+  #...
+  mvc.view:
+    prefix: /WEB-INF/
+    suffix: .jsp
+````
+
+````src/main/resources/application.yml```` should look like this now:
+````
+spring:
+  jpa:
+    generate-ddl: true
+    properties.hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
+  datasource:
+    url: jdbc:h2:${java.io.tmpdir}/movie-fun
+    username: root
+  mvc.view:
+    prefix: /WEB-INF/
+    suffix: .jsp
+````
+This will allow Spring to find our [jsps](https://en.wikipedia.org/wiki/JavaServer_Pages) in the ````WEB-INF```` folder.
+
+- Finally, move ````index.jsp```` from the ````webapp/```` folder into the ````webapp/WEB-INF/```` folder.
+
+- Run the app to test that it still runs locally:
+````
+mvn spring-boot:run
+````
+You will be able to navigate the home page, but other pages will not work yet. We will get the rest working in the upcoming labs.
+
+
+
