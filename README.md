@@ -689,10 +689,11 @@ We will now remove setup logic from the `setup.jsp` view since it is now taken c
 ```
 
 - Run the App
+Test whether the Movie-Fun app still runs locally. 
 ````
 mvn spring-boot:run
 ````
-Test that the app still runs locally. You will be able to navigate the home page and the setup page, but the movies list page still returns a 404.
+You will be able to navigate the home page and the setup page, but the [movies list page](http://localhost:8080/moviefun) still returns a 404.
 
 
 
