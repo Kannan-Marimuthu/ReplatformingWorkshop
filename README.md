@@ -931,4 +931,114 @@ mvn spring-boot:run
 
 - Once you are satisfied move on to the next step.
 
-# 19 - 
+# 19 - Update smoke tests
+Update and run the smoke tests to make sure everything is working and to protect against future regressions.
+
+- Open the `SmokeTest` class in `src/test/java/`.
+
+- Update the setup page path from `/setup.jsp` to `/setup`.
+```java
+- String setupPage = restTemplate.getForObject(url("/setup.jsp"), String.class);
++ String setupPage = restTemplate.getForObject(url("/setup"), String.class);
+```
+
+- Next change the `baseUrl` to `http://localhost:8080`.
+```java
+- String baseUrl = "http://localhost:8080/moviefun";
++ String baseUrl = "http://localhost:8080";
+```
+
+- You should now have SmokeTest.java looking like this:
+###### _src/test/java/org/superbiz/moviefun/SmokeTest.java_
+```java
+package org.superbiz.moviefun;
+
+import org.junit.Test;
+import org.springframework.web.client.RestTemplate;
+
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+public class SmokeTest {
+
+    @Test
+    public void smokeTest() {
+        RestTemplate restTemplate = new RestTemplate();
+
+        String homePage = restTemplate.getForObject(url("/"), String.class);
+
+        assertThat(homePage, containsString("Please select one of the following links:"));
+
+        String setupPage = restTemplate.getForObject(url("/setup"), String.class);
+
+        assertThat(setupPage, containsString("Wedding Crashers"));
+        assertThat(setupPage, containsString("Starsky & Hutch"));
+        assertThat(setupPage, containsString("Shanghai Knights"));
+        assertThat(setupPage, containsString("I-Spy"));
+        assertThat(setupPage, containsString("The Royal Tenenbaums"));
+
+        String movieFunPage = restTemplate.getForObject(url("/moviefun"), String.class);
+
+        assertThat(movieFunPage, containsString("Wedding Crashers"));
+        assertThat(movieFunPage, containsString("David Dobkin"));
+    }
+
+    private String url(String path) {
+        String baseUrl = "http://localhost:8080";
+        String envUrl = System.getenv("MOVIE_FUN_URL");
+
+        if (envUrl != null && !envUrl.isEmpty()) {
+            baseUrl = envUrl;
+        }
+
+        return baseUrl + path;
+    }
+}
+```
+- Now run the smoke tests locally and ensure that they are passing.
+````
+mvn spring-boot:run
+````
+In another terminal, run the tests:
+````
+mvn test
+````
+If the tests fail there is likely a problem with your configuration. In this case, navigate to [localhost:8080](http://localhost:8080/) in your browser and check the server logs in your terminal to debug.
+
+- Clean up unused code by removing the `persistence.xml` file.
+
+# 20 - Deploy to Cloud Foundry
+Now it is time to push to Cloud Foundry.
+
+- Update the `manifest.yml` file to use the [java buildpack](https://github.com/cloudfoundry/java-buildpack) and to bind the application to a MySQL service instance you are about to create. The manifest.yml file should now look like this:
+
+###### _manifest.yml_
+````
+name: movie-fun
+random-route: true
+path: target/moviefun.war
+buildpack: java_buildpack
+services:
+- movie-mysql
+````
+
+- Now build Movie Fun and deploy it to Cloud Foundry.
+````
+mvn clean package -DskipTests -Dmaven.test.skip=true
+cf create-service p-mysql 100mb movie-mysql
+cf push
+````
+Check everything still works in the browser.
+
+- Once you are confident, make sure that our data persists after a restage.
+````
+cf restage movie-fun
+````
+
+- Verify again using the smoke tests.
+````
+MOVIE_FUN_URL="http://url.to.you.app.on.cf" mvn test
+````
+
+Once the tests pass, you are done! 
+Congratulations on successfully replatforming the "Movie Fun" App!
