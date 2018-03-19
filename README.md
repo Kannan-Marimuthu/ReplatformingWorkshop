@@ -39,13 +39,13 @@ First you need to open a Command Window on your Windows Machine or a Terminal on
 mkdir workspace
 cd workspace
 ````
-Clone the Chess App from GitHub and _cf push_ it by using the following commands:
+Clone the Chess App from GitHub and _cf push_ it using the following commands:
 ````
 git clone https://github.com/Pivotal-Field-Engineering/chess
 cd chess
 cf push
 ````
-Once the _cf push_ has successfully finished, you should see something like the example below. Look for the URL.
+Once the _cf push_ has successfully finished, you should see an output similar to the example shown below. Look for the URL.
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/chess.jpg)
 
@@ -102,7 +102,12 @@ cf create-service p-mysql 100mb movie-mysql
 cf bind-service movie-fun movie-mysql
 cf restage movie-fun
 ````
-Refresh the movie list page again, and notice that our data is now persisted even if you _cf stop_ and _cf start_ your App.
+Refresh the movie list page again, and notice that our data is now persisted even if you _cf stop_ and _cf start_ your App in the previous step of this workshop/lab.
+
+Now take a look at the results of the following command so you can see how the _cf bind-service_ passes connection string information using environment variables:
+````
+cf env movie-fun
+````
 
 # 8 - A Word of Caution
 Our "Movie Fun" App is now working, but we should test it thoroughly because the [TomEE buildpack](https://github.com/cloudfoundry-community/tomee-buildpack) is a community-developed buildpack which has no official support from Pivotal. As bug fixes or security fixes are needed, Pivotal commits to updating the officially supported buildpacks and pushing changes to PCF operators. Community buildpacks may be slow to get similar updates, or may not get them at all.
@@ -117,5 +122,190 @@ cf delete movie-fun
 cf delete-service my-mysql
 ````
 
-# 10 - 
+# 10 - Update dependencies
+We will introduce the [Spring Boot](https://projects.spring.io/spring-boot/) dependencies that will be needed for the following labs. Along the way we will also clean up some unnecessary configurations.
+- In pom.xml, remove tomee.version:
+````
+- <tomee.version>7.0.2</tomee.version>
+````
+- Add the Spring Boot Maven plugin inside the <build> tag:
+  
+````
+<plugins>
+    <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+    </plugin>
+</plugins>
+````
+This plugin provides Spring Boot support in Maven, allowing you to package executable jar or war archives and run an application locally.
+- Add the Spring Boot starter parent inside the <project> tag:
+  
+````
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>1.4.2.RELEASE</version>
+</parent>
+````
+The parent will manage versions of all dependencies needed by Spring Boot. We only need to specify the Spring Boot version number on this dependency. When importing additional starters, we can safely omit the version number.
+- Remove the version from javax.servlet, as this is provided by spring-boot-starter-parent.
+````
+- <version>1.2</version>
+````
+- Add the following dependencies after commons-lang.
+````
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-tomcat</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.apache.tomcat.embed</groupId>
+    <artifactId>tomcat-embed-jasper</artifactId>
+</dependency>
 
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+</dependency>
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+</dependency>
+````
+The dependency on h2 (an in-memory database) is only introduced for the convenience of this lab. We would normally recommend using a MySQL database for local development in order to get our development environment as close to production as possible.
+
+- Remove the spring-web dependency in test scope since it is now provided by spring-boot-starter-web.
+````
+- <dependency>
+-     <groupId>org.springframework</groupId>
+-     <artifactId>spring-web</artifactId>
+-     <version>4.3.4.RELEASE</version>
+-     <scope>test</scope>
+- </dependency>
+````
+
+- Your solution should look like this:
+
+
+#### _pom.xml_
+````
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.superbiz</groupId>
+    <artifactId>moviefun</artifactId>
+    <packaging>war</packaging>
+    <version>1.1.0-SNAPSHOT</version>
+    <name>OpenEJB :: Web Examples :: Moviefun</name>
+
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+
+    <build>
+        <finalName>moviefun</finalName>
+        <defaultGoal>package</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.4.2.RELEASE</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tomee</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+````
+
+# 11 - Create the Application class
+Next, create the Application class which will be the basis of our Spring Boot application.
+
+
+#### _src/main/java/org/superbiz/moviefun/Application.java_
+````
+view on GitHub 
+package org.superbiz.moviefun;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class Application {
+
+    public static void main(String... args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+````
+If you are unfamiliar with Spring Boot, take a minute to read this about the different pieces of the Application class.
