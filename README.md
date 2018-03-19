@@ -196,7 +196,7 @@ The dependency on [h2](http://www.h2database.com/html/main.html) (an in-memory d
 - Your solution should look like this:
 
 
-#### _pom.xml_
+###### _pom.xml_
 ````
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -292,7 +292,7 @@ The dependency on [h2](http://www.h2database.com/html/main.html) (an in-memory d
 Next, create the ````Application```` class which will be the basis of our Spring Boot application.
 
 
-#### _src/main/java/org/superbiz/moviefun/Application.java_
+###### _src/main/java/org/superbiz/moviefun/Application.java_
 ````
 view on GitHub 
 package org.superbiz.moviefun;
@@ -309,3 +309,32 @@ public class Application {
 }
 ````
 If you are unfamiliar with Spring Boot, take a minute to read [this](https://spring.io/guides/gs/spring-boot/#_create_an_application_class) about the different pieces of the ````Application```` class.
+
+# 12 - Create application.yml
+Provide some configuration for our simple database setup in application.yml.
+
+###### _src/main/resources/application.yml_
+````
+spring:
+  jpa:
+    generate-ddl: true
+    properties.hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
+  datasource:
+    url: jdbc:h2:${java.io.tmpdir}/movie-fun
+    username: root
+````
+At this point, the Spring Boot application should start, but we have not yet configured any endpoints.
+
+Start the app with
+````
+mvn spring-boot:run
+````
+Navigate to the home page at [localhost:8080](http://localhost:8080/) and check that it returns a 404.
+
+
+
+
+
+
+mvn spring-boot:run
+Navigate to the home page at localhost:8080 and check that it returns a 404.
