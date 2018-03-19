@@ -1005,7 +1005,7 @@ mvn test
 ````
 If the tests fail there is likely a problem with your configuration. In this case, navigate to [localhost:8080](http://localhost:8080/) in your browser and check the server logs in your terminal to debug.
 
-- Clean up unused code by removing the `persistence.xml` file.
+- Clean up unused code by removing the `persistence.xml` file found at `src/main/resources/META-INF/persistence.xml`
 
 # 20 - Deploy to Cloud Foundry
 Now it is time to push to Cloud Foundry.
