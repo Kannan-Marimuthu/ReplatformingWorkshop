@@ -128,7 +128,7 @@ We will introduce the [Spring Boot](https://projects.spring.io/spring-boot/) dep
 ````
 - <tomee.version>7.0.2</tomee.version>
 ````
-- Add the Spring Boot Maven plugin inside the <build> tag:
+- Add the Spring Boot Maven plugin inside the ````<build>```` tag:
   
 ````
 <plugins>
@@ -139,7 +139,7 @@ We will introduce the [Spring Boot](https://projects.spring.io/spring-boot/) dep
 </plugins>
 ````
 This plugin provides Spring Boot support in Maven, allowing you to package executable jar or war archives and run an application locally.
-- Add the Spring Boot starter parent inside the <project> tag:
+- Add the Spring Boot starter parent inside the ````<project>```` tag:
   
 ````
 <parent>
