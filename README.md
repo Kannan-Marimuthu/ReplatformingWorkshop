@@ -695,5 +695,240 @@ mvn spring-boot:run
 ````
 You will be able to navigate the home page and the setup page, but the [movies list page](http://localhost:8080/moviefun) still returns a 404.
 
+# 17 - Prepare the ActionServlet
+Configuring the `/moviefun` endpoint is the final step to make Movie Fun a fully-functional Spring Boot application.
 
+- Start by making the `ActionServlet` injectable by adding the `@Component` annotation.
 
+- Next, create a constructor with `MoviesBean` and `PlatformTransactionManager`. Spring will inject these into the `ActionServlet` on application load.
+
+```java
++ @Component
+  public class ActionServlet extends HttpServlet {
+      //...    
+
+-     @EJB
+-     private MoviesBean moviesBean;
+
++     private final MoviesBean moviesBean;
++     private final PlatformTransactionManager transactionManager;
++
++     public ActionServlet(MoviesBean moviesBean, PlatformTransactionManager transactionManager) {
++         this.moviesBean = moviesBean;
++         this.transactionManager = transactionManager;
++     }
+
+      //...
+  }
+```
+
+- Now wrap the `process` function in a transaction. The `MoviesBean` uses an entity manager which requires writes to the database to be wrapped in a transaction.
+
+```java
+private void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    TransactionStatus transaction = transactionManager.getTransaction(null);
+    processWithoutTransaction(request, response);
+    transactionManager.commit(transaction);
+}
+
+private void processWithoutTransaction(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    // old process function code here
+}
+
+//...
+```
+
+- After these changes you should have:
+###### _src/main/java/org/superbiz/moviefun/ActionServlet.java_
+```java
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.superbiz.moviefun;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+
+@Component
+public class ActionServlet extends HttpServlet {
+
+    private static final long serialVersionUID = -5832176047021911038L;
+    private static final int PAGE_SIZE = 5;
+
+    private final MoviesBean moviesBean;
+    private final PlatformTransactionManager transactionManager;
+
+    public ActionServlet(MoviesBean moviesBean, PlatformTransactionManager transactionManager) {
+        this.moviesBean = moviesBean;
+        this.transactionManager = transactionManager;
+    }
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        process(request, response);
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        process(request, response);
+    }
+
+    private void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        TransactionStatus transaction = transactionManager.getTransaction(null);
+        processWithoutTransaction(request, response);
+        transactionManager.commit(transaction);
+    }
+
+    private void processWithoutTransaction(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+
+        if ("Add".equals(action)) {
+
+            String title = request.getParameter("title");
+            String director = request.getParameter("director");
+            String genre = request.getParameter("genre");
+            int rating = Integer.parseInt(request.getParameter("rating"));
+            int year = Integer.parseInt(request.getParameter("year"));
+
+            Movie movie = new Movie(title, director, genre, rating, year);
+
+            moviesBean.addMovie(movie);
+            response.sendRedirect("moviefun");
+            return;
+
+        } else if ("Remove".equals(action)) {
+
+            String[] ids = request.getParameterValues("id");
+            for (String id : ids) {
+                moviesBean.deleteMovieId(new Long(id));
+            }
+
+            response.sendRedirect("moviefun");
+            return;
+
+        } else {
+            String key = request.getParameter("key");
+            String field = request.getParameter("field");
+
+            int count = 0;
+
+            if (StringUtils.isEmpty(key) || StringUtils.isEmpty(field)) {
+                count = moviesBean.countAll();
+                key = "";
+                field = "";
+            } else {
+                count = moviesBean.count(field, key);
+            }
+
+            int page = 1;
+
+            try {
+                page = Integer.parseInt(request.getParameter("page"));
+            } catch (Exception e) {
+            }
+
+            int pageCount = (count / PAGE_SIZE);
+            if (pageCount == 0 || count % PAGE_SIZE != 0) {
+                pageCount++;
+            }
+
+            if (page < 1) {
+                page = 1;
+            }
+
+            if (page > pageCount) {
+                page = pageCount;
+            }
+
+            int start = (page - 1) * PAGE_SIZE;
+            List<Movie> range;
+
+            if (StringUtils.isEmpty(key) || StringUtils.isEmpty(field)) {
+                range = moviesBean.findAll(start, PAGE_SIZE);
+            } else {
+                range = moviesBean.findRange(field, key, start, PAGE_SIZE);
+            }
+
+            int end = start + range.size();
+
+            request.setAttribute("count", count);
+            request.setAttribute("start", start + 1);
+            request.setAttribute("end", end);
+            request.setAttribute("page", page);
+            request.setAttribute("pageCount", pageCount);
+            request.setAttribute("movies", range);
+            request.setAttribute("key", key);
+            request.setAttribute("field", field);
+        }
+
+        request.getRequestDispatcher("WEB-INF/moviefun.jsp").forward(request, response);
+    }
+
+}
+```
+
+# 18 - Register the servlet
+Next register the servlet at the `/moviefun` path.
+
+- Add the following `@Bean` method in the `Application` class:
+
+```java
+@Bean
+public ServletRegistrationBean actionServletRegistration(ActionServlet actionServlet) {
+    return new ServletRegistrationBean(actionServlet, "/moviefun");
+}
+```
+- Application.java should now look like this:
+###### _src/main/java/org/superbiz/moviefun/Application.java_
+```java
+package org.superbiz.moviefun;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.context.annotation.Bean;
+
+@SpringBootApplication
+public class Application {
+
+    public static void main(String... args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+    @Bean
+    public ServletRegistrationBean actionServletRegistration(ActionServlet actionServlet) {
+        return new ServletRegistrationBean(actionServlet, "/moviefun");
+    }
+}
+```
+
+- Start the application and click around to make sure everything is working. 
+````
+mvn spring-boot:run
+````
+
+- Once you are satisfied move on to the next step.
+
+# 19 - 
