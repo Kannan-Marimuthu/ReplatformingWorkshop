@@ -1,5 +1,8 @@
 # Replatforming Workshop
-This material covers the steps to replatform a Struts App called "Movie Fun" to run on Pivotal Cloud Foundry
+Movie Fun is a simple movie catalog management application. It is currently implemented using Java Enterprise. It was designed to run on TomEE, and uses EJBs and Servlets. Database configuration is done through JNDI.
+In this workshop we will first try to deploy Movie Fun to Cloud Foundry using the TomEE buildpack. We will then replatform Movie Fun by wrapping it in a Spring Boot container. By the end of the lab we will have a cloud-ready, working application deployed to Cloud Foundry.
+
+![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/ReplatformNModernize.jpg)
 
 # Prerequisites
 To get started you will need the following prerequisites on your machine.
