@@ -46,22 +46,22 @@ Notes:
 Throughout the execution of this workshop, you are encouraged to take a look at the statics and health of your "Movie Fun" App by accessing the [Apps Manager GUI](https://login.sys.testpcf.nwie.net).
 
 # 3 - Let's Start with a simple _cf push_
-Open a Terminal Window on your local machine, then create a workspace directory, and navigate to it.
+- Open a Terminal Window on your local machine, then create a workspace directory, and navigate to it.
 ````
 mkdir workspace
 cd workspace
 ````
-Clone the Chess App from GitHub and _cf push_ it using the commands shown below. If you are unable to use _git clone_ you can download the zip version of the same content from here.
+- Clone the Chess App from GitHub and _cf push_ it using the commands shown below. If you are unable to use _git clone_ you can download the zip version of the same content from [here](https://github.com/rm511130/ReplatformingWorkshop/blob/master/chess-master.zip).
 ````
 git clone https://github.com/Pivotal-Field-Engineering/chess
 cd chess
 cf push
 ````
-Once the _cf push_ has successfully finished, you should see an output similar to the example shown below. Look for the URL.
+- Once the _cf push_ has successfully finished, you should see an output similar to the example shown below. Look for the URL.
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/chess.jpg)
 
-Open a browser and check whether your Chess App is running.
+- Open a browser and check whether your Chess App is running.
 
 # 4 - Get the "Movie Fun" App
 Clone the Movie Fun application from GitHub. Assuming you are still in the _chess_ directory, execute the following commands:
