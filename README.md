@@ -118,6 +118,27 @@ vcap@62a2fb26-49ab-492d-4d8e-5b1d:~$ watch -n 0 curl -k https://your-chess-url.a
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/autoscaling.jpg)
 
+- Using Apps Manager, observe how PCF scales the number of App Instances in order to meet the scaling rules you defined.
+ 
+- Go back to the terminal window where the _watch_ command is running and CTRL-C to stop it, but don't exit the ssh session into the PCF container. Execute the following command:
+
+````
+vcap@62a2fb26-49ab-492d-4d8e-5b1d:~$ ps -e | head -n 4
+````
+- Note the PID (Process ID) of the line that reads `python` and use it to kill the container per the example below:
+
+````
+vcap@c9f68520-d3bc-43fa-78e1-b9b3:~$ ps -e | head -n 4
+    PID TTY          TIME CMD
+      1 ?        00:00:00 runc:[2:INIT]
+     14 ?        00:00:26 python
+     19 ?        00:00:18 diego-sshd
+vcap@c9f68520-d3bc-43fa-78e1-b9b3:~$ kill -9 14
+````
+- You will be _kicked-out_ of the ssh session into the PCF container. Take a look at your Apps Manager GUI:
+
+![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/crashed_but_restarted.jpg)
+
 - Clean Up
     - CTRL-C and Exit out of the container that was running the _watch_ command.
     - Scale your _Chess_ App down to 1 or 0 instances.
