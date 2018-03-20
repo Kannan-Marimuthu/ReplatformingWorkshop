@@ -94,19 +94,14 @@ cf push
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/map_route.jpg)
 
-- Now let's take a look at the container(s) running your Chess App. You will need to _ssh_ into _elvmjt025_, a VM that has been loaded with the _CF CLI_ and has permission to ssh into PCF containers. Follow the example shown below executing the same commands but using your own username instead of _smithc52_. The last step in the sequence below is a _watch_ command - leave it running and proceed to the next step.
+- Now let's take a look at the container(s) running your Chess App. You will need to _ssh_ into _elvmjt025_, a VM that has been loaded with the _CF CLI_ and has permission to ssh into PCF containers. Follow the example shown below. The last step in the sequence is a _watch_ command - leave it running and proceed to the next step.
 
 ````
 ssh your_username@elvmjt025
 
-smithc52@elvmjt025:PROD:~> cf a
-Getting apps in org demo / space demo as smithc52...
-OK
-
-name           requested state   instances   memory   disk   urls
-chess          started           1/1         50M      1G     chess-noisy-lemur.apps.testpcf.nwie.net
-
-smithc52@elvmjt025:PROD:~> cf ssh chess -i 0
+your_username@elvmjt025:PROD:~> cf api api.sys.testpcf.nwie.net
+your_username@elvmjt025:PROD:~> cf login
+your_username@elvmjt025:PROD:~> cf ssh chess -i 0
 
 vcap@62a2fb26-49ab-492d-4d8e-5b1d:~$ watch -n 0 curl -k https://your-chess-url.apps.testpcf.nwie.net
 ````
