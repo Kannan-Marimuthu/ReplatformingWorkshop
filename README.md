@@ -103,6 +103,11 @@ your_username@elvmjt025:PROD:~> cf api api.sys.testpcf.nwie.net
 your_username@elvmjt025:PROD:~> cf login
 your_username@elvmjt025:PROD:~> cf ssh chess -i 0
 
+vcap@62a2fb26-49ab-492d-4d8e-5b1d:~$ echo Try out some Linux commands
+vcap@62a2fb26-49ab-492d-4d8e-5b1d:~$ ps -ef
+vcap@62a2fb26-49ab-492d-4d8e-5b1d:~$ uname -a
+vcap@62a2fb26-49ab-492d-4d8e-5b1d:~$ df -h
+vcap@62a2fb26-49ab-492d-4d8e-5b1d:~$ du -d 3 .
 vcap@62a2fb26-49ab-492d-4d8e-5b1d:~$ watch -n 0 curl -k https://your-chess-url.apps.testpcf.nwie.net
 ````
 - The _watch_ command you executed above will keep on accessing your _Chess_ App. Leave it running for now, and access PCF Metrics to see performance details about your App instance(s) and its container(s).
