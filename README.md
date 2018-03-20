@@ -1,13 +1,14 @@
 # Pivotal Cloud Foundry Familiarization and Replatforming Workshop
-- This Workshop assumes you have a Java Development background & no knowledge of [Pivotal Cloud Foundry](https://www.youtube.com/watch?v=7APZD0me1nU).
+- This Workshop assumes you have a Java Development background & a basic understanding of [Pivotal Cloud Foundry](https://www.youtube.com/watch?v=7APZD0me1nU).
 - During this workshop you will _cf push_ applications to run on Nationwide's own PCF test instance.
-- You will log into PCF using your single-sign-on credentials and push a simple Chess application to get situated.
+- You will log into PCF using your Nationwide Username and push a simple Chess application to get situated.
 - You will then proceed with "Movie Fun", a movie catalog management application implemented using Java Enterprise. "Movie-Fun" was designed to run on TomEE. It uses EJBs and Servlets. The Database configuration is done through JNDI.
 - In this workshop you will first deploy Movie Fun to PCF using the [TomEE buildpack](https://github.com/cloudfoundry-community/tomee-buildpack). 
 - We will then replatform Movie Fun by wrapping it in a [Spring Boot](https://projects.spring.io/spring-boot/) container. 
 - By the end of the lab we will have a cloud-ready, working application deployed to Cloud Foundry.
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/ReplatformNModernize.jpg)
+
 
 # Prerequisites
 To get started you will need the following prerequisites on your machine.
@@ -21,12 +22,14 @@ To get started you will need the following prerequisites on your machine.
 
 These labs will be much easier to complete if you use a Java IDE (as opposed to a text editor). All Java IDEs have the ability to auto-import dependencies which provides a much smoother development process. These labs do not provide instructions on imports, so if you must use a text editor you will need to refer to the code solutions often for direction on imports.
 
+
 # Checking some of the Prerequisites
 The examples shown below, both for a Windows client and a MacOS client, show client systems have met the first four prerequisites. You should execute the same commands on your machine and correct any errors before proceeding.
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/DOS.jpg)
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/Mac.jpg)
+
 
 # 1 - Connect to Cloud Foundry
 Once you have installed the Cloud Foundry CLI you will need to log in to the correct organization and space for this lab with the following commands:
@@ -40,10 +43,12 @@ Ask your facilitator for help if you cannot easily log into PCF.
 Notes:
 - If your PCF installation does not have a CA cert you will need to use ````cf api api.sys.testpcf.nwie.net --skip-ssl-validation````.
 - If you try to use a `git bash` window the `cf cli` commands will not work properly
-- Your Username will be granted OrgManager, SpaceManager and SpaceDeveloper roles in an isolated, multitenant PCF environment.
+- Your Username will be granted PCF OrgManager, SpaceManager and SpaceDeveloper roles in an isolated, multitenant PCF environment.
+
 
 # 2 - Apps Manager
 Throughout the execution of this workshop, you are encouraged to take a look at the statics and health of your "Movie Fun" App by accessing the [Apps Manager GUI](https://login.sys.testpcf.nwie.net).
+
 
 # 3 - Let's Start with a simple _cf push_
 - Open a Terminal Window on your local machine, then create a workspace directory, and navigate to it.
@@ -63,6 +68,7 @@ cf push
 
 - Open a browser and check whether your Chess App is running.
 
+
 # 4 - Get the "Movie Fun" App
 Clone the Movie Fun application from GitHub. Assuming you are still in the _chess_ directory, execute the following commands:
 ````
@@ -71,6 +77,7 @@ git clone https://github.com/rm511130/replatforming-workshop-code
 cd replatforming-workshop-code
 ````
 If you are unable to clone from Git, you may download the course [here](https://github.com/rm511130/ReplatformingWorkshop/blob/master/replatforming-workshop-code-master.zip).
+
 
 # 5 - Deploy "Movie Fun" using the TomEE Buildpack
 The first thing to try with a Java Enterprise app is to deploy a warfile using a Java Enterprise compatible [buildpack](https://docs.cloudfoundry.org/buildpacks/). We will try the [TomEE buildpack](https://github.com/cloudfoundry-community/tomee-buildpack) for Movie Fun.
@@ -89,6 +96,8 @@ Build and deploy the application by running
 mvn clean package -DskipTests -Dmaven.test.skip=true
 cf push
 ````
+
+
 # 6 - "Movie Fun" on Cloud Foundry
 Once your app is deployed, a route to your running application will be displayed.
 
@@ -102,6 +111,7 @@ cf start movie-fun
 - Refresh the movie list page in your browser. What do you notice?
 - The movie list page is now blank because we are using an in-memory [HSQL database](http://hsqldb.org//). 
 - To persist our data we will bind our app to a [MySQL database](https://www.mysql.com/).
+
 
 # 7 - Create a MySQL binding & restage "Movie Fun"
 Your Cloud Foundry installation comes with several on-demand services which you can use:
@@ -121,10 +131,12 @@ Now take a look at the results of the following command so you can see how the _
 cf env movie-fun
 ````
 
+
 # 8 - A Word of Caution
 Our "Movie Fun" App is now working, but we should test it thoroughly because the [TomEE buildpack](https://github.com/cloudfoundry-community/tomee-buildpack) is a community-developed buildpack which has no official support from Pivotal. As bug fixes or security fixes are needed, Pivotal commits to updating the officially supported buildpacks and pushing changes to PCF operators. Community buildpacks may be slow to get similar updates, or may not get them at all.
 
 In the next lab you will take advantage of the officially supported Java buildpack and Spring's seamless Cloud Foundry integration.
+
 
 # 9 - Clean up
 Before moving on, it is very important to remember to clean up your Cloud Foundry space because you are using a shared PCF environment where resources are not free. You can clean up by using your [Apps Manager GUI](https://login.sys.testpcf.nwie.net) or by using the following commands:
@@ -134,13 +146,16 @@ cf delete movie-fun
 cf delete-service my-mysql
 ````
 
+
 # 10 - Update dependencies
-We will introduce the [Spring Boot](https://projects.spring.io/spring-boot/) dependencies that will be needed for the following labs. Along the way we will also clean up some unnecessary configurations.
+We will introduce the [Spring Boot](https://projects.spring.io/spring-boot/) dependencies that will be needed for the following labs. Along the way we will also clean up some unnecessary configurations. The proposed code changes that follow will be incremental in nature  and will always be accompanied, at the end of each section, by a complete example of the final state of the files you will be asked to alter.
+
 - In pom.xml, remove tomee.version:
 ````
 - <tomee.version>7.0.2</tomee.version>
 ````
-- Add the [Spring Boot Maven plugin](http://docs.spring.io/spring-boot/docs/current/reference/html/build-tool-plugins-maven-plugin.html) inside the ````<build>```` tag:
+
+- Add the [Spring Boot Maven plugin](http://docs.spring.io/spring-boot/docs/current/reference/html/build-tool-plugins-maven-plugin.html) inside the `<build>` tag:
   
 ````
 <plugins>
