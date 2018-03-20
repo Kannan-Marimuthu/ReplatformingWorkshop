@@ -11,6 +11,7 @@
 - This Workshop assumes you have a Java Development background & a basic understanding of [Pivotal Cloud Foundry](https://www.youtube.com/watch?v=7APZD0me1nU).
 - During this workshop you will _cf push_ applications that will run on Nationwide's own PCF test instance.
 - You will log into PCF using your Nationwide Username and push a simple Chess application to get situated.
+- You will use Apps Manager to get a complete view of your Chess App and you will access the container running your App.
 - You will then proceed with "Movie Fun", a movie catalog management application implemented using Java Enterprise. "Movie-Fun" was designed to run on TomEE. It uses EJBs and Servlets. The Database configuration is done through JNDI.
 - In this workshop you will first deploy Movie Fun to PCF using the [TomEE buildpack](https://github.com/cloudfoundry-community/tomee-buildpack). 
 - We will then replatform Movie Fun by wrapping it in a [Spring Boot](https://projects.spring.io/spring-boot/) container. 
