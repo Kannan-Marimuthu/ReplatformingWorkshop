@@ -90,7 +90,7 @@ cf push
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/org_quota.jpg)
 
-- Now map a ne route to your Chess App. Using your browser, access the newly mapped route. 
+- Now map a new route to your Chess App. Using your browser, access the newly mapped route. 
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/map_route.jpg)
 
