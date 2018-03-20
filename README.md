@@ -48,6 +48,7 @@ Once you have installed the Cloud Foundry CLI you will need to log in to the cor
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/kundert_login.jpg)
 
 Ask your facilitator for help if you cannot easily log into PCF.
+
 Notes:
 - If your PCF installation does not have a CA cert you will need to use ````cf api api.sys.testpcf.nwie.net --skip-ssl-validation````.
 - If you try to use a `git bash` window the `cf cli` commands will not work properly
