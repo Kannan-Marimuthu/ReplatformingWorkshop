@@ -94,7 +94,7 @@ cf push
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/map_route.jpg)
 
-- Now let's take a look at the container(s) running your Chess App. You will need to _ssh_ into _elvmjt025_, a VM that has been loaded with the _CF CLI_ and has permission to ssh into PCF containers. Follow the example shown below executing the same commands but using your own username instead of _smithc52_.
+- Now let's take a look at the container(s) running your Chess App. You will need to _ssh_ into _elvmjt025_, a VM that has been loaded with the _CF CLI_ and has permission to ssh into PCF containers. Follow the example shown below executing the same commands but using your own username instead of _smithc52_. The last step in the sequence below is a _watch_ command - leave it running and proceed to the next step.
 
 ````
 ssh your_username@elvmjt025
@@ -108,11 +108,15 @@ chess          started           1/1         50M      1G     chess-noisy-lemur.a
 
 smithc52@elvmjt025:PROD:~> cf ssh chess -i 0
 
-vcap@62a2fb26-49ab-492d-4d8e-5b1d:~$ watch curl -k https://your-chess-url.apps.testpcf.nwie.net
+vcap@62a2fb26-49ab-492d-4d8e-5b1d:~$ watch -n 0 curl -k https://your-chess-url.apps.testpcf.nwie.net
 ````
 - The _watch_ command you executed above will keep on accessing your _Chess_ App. Leave it running for now, and access PCF Metrics to see performance details about your App instance(s) and its container(s).
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/pcf_metrics.jpg)
+
+- With the _watch_ command still active, set-up auto-scaling per the example shown below:
+
+![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/autoscaling.jpg)
 
 - Clean Up
     - CTRL-C and Exit out of the container that was running the _watch_ command.
