@@ -15,7 +15,7 @@
 - In this workshop you will first deploy Movie Fun to PCF using the [TomEE buildpack](https://github.com/cloudfoundry-community/tomee-buildpack). 
 - We will then replatform Movie Fun by wrapping it in a [Spring Boot](https://projects.spring.io/spring-boot/) container. 
 - By the end of the lab we will have a cloud-ready, working application deployed to Cloud Foundry.
-- The diagram shown below depics the typical possible paths to running Apps on PCF.
+- The diagram shown below depics the typical paths to running Apps on PCF.
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/ReplatformNModernize.jpg)
 
@@ -66,7 +66,7 @@ Throughout the execution of this workshop, you are encouraged to take a look at 
 mkdir workspace
 cd workspace
 ````
-- Clone the Chess App from GitHub and _cf push_ it using the commands shown below. If you are unable to use _git clone_ you can download the zip version of the same content from [here](https://github.com/rm511130/ReplatformingWorkshop/blob/master/chess-master.zip).
+- Clone the Chess App from GitHub and _cf push_ it using the commands shown below. If you are unable to use _git clone_ you can download the zip version of the same content from [here](https://github.com/rm511130/ReplatformingWorkshop/blob/master/chess-master.zip). If you decide to download the zipped file, unzip-extract-all its contents under your _workspace_ directory and then `cd chess-master` + `cf push`.
 ````
 git clone https://github.com/Pivotal-Field-Engineering/chess
 cd chess
@@ -78,6 +78,43 @@ cf push
 
 - Open a browser and check whether your Chess App is running.
 
+![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/chess_board.jpg)
+
+- Take a look at what [Apps Manager](https://login.sys.testpcf.nwie.net/) can tell you about the Chess App. 
+
+![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/appsmgr_chess.jpg)
+
+- Scale the number of instances of your Chess App to 2 ~ 50 instances. How fast does PCF respond to your request? Note that you are limited by the amount of memory allocated to your Org. Do you remember seeing your Org Memory Quota in Apps Manager?
+
+![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/org_quota.jpg)
+
+- Now map a ne route to your Chess App. Using your browser, access the newly mapped route. 
+
+![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/map_route.jpg)
+
+- Now let's take a look at the container(s) running your Chess App. You will need to _ssh_ into _elvmjt025_, a VM that has been loaded with the _CF CLI_ and has permission to ssh into PCF containers. Follow the example shown below executing the same commands but using your own username instead of _smithc52_.
+
+````
+ssh your_username@elvmjt025
+
+smithc52@elvmjt025:PROD:~> cf a
+Getting apps in org demo / space demo as smithc52...
+OK
+
+name           requested state   instances   memory   disk   urls
+chess          started           1/1         50M      1G     chess-noisy-lemur.apps.testpcf.nwie.net
+
+smithc52@elvmjt025:PROD:~> cf ssh chess -i 0
+
+vcap@62a2fb26-49ab-492d-4d8e-5b1d:~$ watch curl -k https://your-chess-url.apps.testpcf.nwie.net
+````
+- The _watch_ command you executed above will keep on accessing your _Chess_ App. Leave it running for now, and access PCF Metrics to see performance details about your App instance(s) and its container(s).
+
+![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/pcf_metrics.jpg)
+
+- Clean Up
+    - CTRL-C and Exit out of the container that was running the _watch_ command.
+    - Scale your _Chess_ App down to 1 or 0 instances.
 
 # 4 - Get the "Movie Fun" App
 Clone the Movie Fun application from GitHub. Assuming you are still in the _chess_ directory, execute the following commands:
