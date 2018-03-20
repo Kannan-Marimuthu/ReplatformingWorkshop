@@ -78,7 +78,7 @@ cf push
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/chess.jpg)
 
-- Open a browser and check whether your Chess App is running.
+- Open a browser and using the URL your system provided to you, check whether your Chess App is running.
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/chess_board.jpg)
 
