@@ -50,7 +50,7 @@ Notes:
 Throughout the execution of this workshop, you are encouraged to take a look at the statics and health of your "Movie Fun" App by accessing the [Apps Manager GUI](https://login.sys.testpcf.nwie.net).
 
 
-# 3 - Let's Start with a simple _cf push_
+# 3 - Let's Start with a simple _cf push_ of a ♞ Chess App
 - Open a Terminal Window on your local machine, then create a workspace directory, and navigate to it.
 ````
 mkdir workspace
@@ -82,6 +82,11 @@ If you are unable to clone from Git, you may download the course [here](https://
 # 5 - Deploy "Movie Fun" using the TomEE Buildpack
 The first thing to try with a Java Enterprise app is to deploy a warfile using a Java Enterprise compatible [buildpack](https://docs.cloudfoundry.org/buildpacks/). We will try the [TomEE buildpack](https://github.com/cloudfoundry-community/tomee-buildpack) for Movie Fun.
 
+Let's check if your DevOps team has already added the TomEE Buildpack to your PCF Test system:
+````
+cf buildpacks
+````
+
 Take a look at the buildpack entry in the manifest.yml for how we specify the TomEE buildpack for deployment.
 
 ###### _manifest.yml_
@@ -89,7 +94,7 @@ Take a look at the buildpack entry in the manifest.yml for how we specify the To
 name: movie-fun
 random-route: true
 path: target/moviefun.war
-buildpack: https://github.com/cloudfoundry-community/tomee-buildpack.git
+buildpack: tomee_buildpack
 ````
 Build and deploy the application by running
 ````
@@ -157,14 +162,14 @@ We will introduce the [Spring Boot](https://projects.spring.io/spring-boot/) dep
 
 - Add the [Spring Boot Maven plugin](http://docs.spring.io/spring-boot/docs/current/reference/html/build-tool-plugins-maven-plugin.html) inside the `<build>` tag:
   
-````
+```html
 <plugins>
     <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
     </plugin>
 </plugins>
-````
+```
 This plugin provides Spring Boot support in Maven, allowing you to package executable jar or war archives and run an application locally.
 - Add the [Spring Boot starter parent](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#using-boot-maven) inside the ````<project>```` tag:
   
@@ -224,7 +229,7 @@ The dependency on [h2](http://www.h2database.com/html/main.html) (an in-memory d
 
 
 ###### _pom.xml_
-````
+```html
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -313,13 +318,13 @@ The dependency on [h2](http://www.h2database.com/html/main.html) (an in-memory d
         </dependency>
     </dependencies>
 </project>
-````
+```
 
 # 11 - Create the Application class
 Next, create the ````Application```` class which will be the basis of our Spring Boot application.
 
 ###### _src/main/java/org/superbiz/moviefun/Application.java_
-````
+```java
 package org.superbiz.moviefun;
 
 import org.springframework.boot.SpringApplication;
@@ -332,7 +337,7 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 }
-````
+```
 If you are unfamiliar with Spring Boot, take a minute to read [this](https://spring.io/guides/gs/spring-boot/#_create_an_application_class) about the different pieces of the ````Application```` class.
 
 # 12 - Create application.yml
@@ -364,7 +369,7 @@ We will use [Spring MVC](https://docs.spring.io/spring/docs/current/spring-frame
 - First, create the ````HomeController```` class that will load our ````index.jsp````.
 
 ###### _src/main/java/org/superbiz/moviefun/HomeController.java_
-````
+```java
 package org.superbiz.moviefun;
 
 import org.springframework.stereotype.Controller;
@@ -378,7 +383,7 @@ public class HomeController {
         return "index";
     }
 }
-````
+```
 If you are unfamiliar with Spring MVC, take some time to read [this](https://spring.io/guides/gs/serving-web-content/#initial) about Spring MVC controllers.
 
 - Next, update application.yml with view rendering config, add:
@@ -435,7 +440,7 @@ public class MoviesBean {
 ````
 MovieBeans.java should now look like this:
 ###### _src/main/java/org/superbiz/moviefun/MoviesBean.java_
-````
+```java
 src/main/java/org/superbiz/moviefun/MoviesBean.java
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -549,7 +554,7 @@ public class MoviesBean {
         entityManager.createQuery("delete from Movie").executeUpdate();
     }
 }
-````
+```
 If you are not familiar with dependency injection in Spring, now is a good time to read [this](http://docs.spring.io/autorepo/docs/spring-boot/current/reference/html/using-boot-spring-beans-and-dependency-injection.html). Note that as of Spring 4.3, you no longer need to specify an explicit injection annotation on beans with a single constructor, so we will omit such annotations in our labs.
 
 # 15 - Update HomeController
