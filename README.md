@@ -1,4 +1,13 @@
 # Pivotal Cloud Foundry Familiarization and Replatforming Workshop
+
+# Agenda
+----
+- What is PCF?
+- Access & Familiarization
+- CF Push & More
+- Replatforming a Java Enterprise App
+----
+
 - This Workshop assumes you have a Java Development background & a basic understanding of [Pivotal Cloud Foundry](https://www.youtube.com/watch?v=7APZD0me1nU).
 - During this workshop you will _cf push_ applications to run on Nationwide's own PCF test instance.
 - You will log into PCF using your Nationwide Username and push a simple Chess application to get situated.
@@ -6,11 +15,12 @@
 - In this workshop you will first deploy Movie Fun to PCF using the [TomEE buildpack](https://github.com/cloudfoundry-community/tomee-buildpack). 
 - We will then replatform Movie Fun by wrapping it in a [Spring Boot](https://projects.spring.io/spring-boot/) container. 
 - By the end of the lab we will have a cloud-ready, working application deployed to Cloud Foundry.
+- The diagram shown below depics the typical possible paths to running Apps on PCF.
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/ReplatformNModernize.jpg)
 
 
-# Prerequisites
+# Prerequisites for this Workshop
 To get started you will need the following prerequisites on your machine.
 
 - [JDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) & check the JAVA_HOME environment variable
@@ -33,12 +43,9 @@ The examples shown below, both for a Windows client and a MacOS client, show cli
 
 # 1 - Connect to Cloud Foundry
 Once you have installed the Cloud Foundry CLI you will need to log in to the correct organization and space for this lab with the following commands:
-````
-cf api api.sys.testpcf.nwie.net 
-cf login
-Email> Your-Nationwide-Username
-Password> enter_your_usual_password
-````
+
+![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/kundert_login.jpg)
+
 Ask your facilitator for help if you cannot easily log into PCF.
 Notes:
 - If your PCF installation does not have a CA cert you will need to use ````cf api api.sys.testpcf.nwie.net --skip-ssl-validation````.
