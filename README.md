@@ -54,8 +54,11 @@ Notes:
 
 
 # 2 - Apps Manager
-Throughout the execution of this workshop, you are encouraged to take a look at the statics and health of your "Movie Fun" App by accessing the [Apps Manager GUI](https://login.sys.testpcf.nwie.net).
+Throughout the execution of this workshop, you are encouraged to take a look at the statics and health of your "Chess" and "Movie Fun" Apps by accessing the [Apps Manager GUI](https://login.sys.testpcf.nwie.net).
 
+![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/appsmgr_1.jpg)
+
+- Please spend a few minutes clicking around the Apps Manager GUI so you can get familiarized with its many features.
 
 # 3 - Let's Start with a simple _cf push_ of a ♞ Chess App
 - Open a Terminal Window on your local machine, then create a workspace directory, and navigate to it.
