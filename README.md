@@ -68,7 +68,7 @@ Throughout the execution of this workshop, you are encouraged to take a look at 
 mkdir workspace
 cd workspace
 ````
-- Clone the Chess App from GitHub and _cf push_ it using the commands shown below. If you are unable to use _git clone_ you can download the zip version of the same content from [here](https://github.com/rm511130/ReplatformingWorkshop/blob/master/chess-master.zip). If you decide to download the zipped file, unzip-extract-all its contents under your _workspace_ directory and then `cd chess-master` + `cf push`.
+- Clone the Chess App from GitHub and _cf push_ it using the commands shown below. If you are unable to use _git clone_ you can download the zipped version of the same content from [here](https://github.com/rm511130/ReplatformingWorkshop/blob/master/chess-master.zip). If you decide to download the zipped file, unzip-extract-all its contents under your _workspace_ directory and then `cd chess-master` + `cf push`.
 ````
 git clone https://github.com/Pivotal-Field-Engineering/chess
 cd chess
