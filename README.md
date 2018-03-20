@@ -87,7 +87,7 @@ Let's check if your DevOps team has already added the TomEE Buildpack to your PC
 cf buildpacks
 ````
 
-Take a look at the buildpack entry in the manifest.yml for how we specify the TomEE buildpack for deployment.
+Take a look at the buildpack entry in the manifest.yml for how we specify the TomEE buildpack for deployment. You will need to correct the `manifest.yml` to match the example shown below:
 
 ###### _manifest.yml_
 ````
