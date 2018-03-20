@@ -1072,7 +1072,7 @@ MOVIE_FUN_URL="http://url.to.you.app.on.cf" mvn test
 
 ###### _if using a Windows Machine_
 ````
-SET MOVIE_FUN_URL="http://url.to.you.app.on.cf"& mvn test
+SET MOVIE_FUN_URL=http://url.to.you.app.on.cf& mvn test
 ````
 
 Once the tests pass, you are done! 
