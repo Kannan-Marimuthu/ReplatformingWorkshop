@@ -1193,6 +1193,11 @@ cf push
 cf bind-service solar _use_the_same_unique_name_you_used_before_ -c user.json
 ````
 
+- Restage the Solar App to make sure the NFS mount takes place:
+````
+cf restage solar
+````
+
 - Now let's take a look at the container that is running your Solar App. You will need to `ssh` into the `elvmjt025` VM. This VM has the _CF CLI_ installed and has permission to `ssh` into PCF containers. Follow the example shown below. 
 
 ````
