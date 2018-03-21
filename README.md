@@ -30,6 +30,7 @@ To get started you will need the following prerequisites on your machine.
 - [Git](https://git-scm.com/downloads)
 - A Java IDE (e.g. [Eclipse Neon](http://www.eclipse.org/downloads/packages/release/Neon/3) or [IntelliJ](https://www.jetbrains.com/idea/download/))
 - [CNTLM](https://spot.nwie.net/site/iMedia/RUN/ops/Wiki%20Pages/CNTLM_Setup.aspx).
+- If using Windows, you will benefit from having [Putty](https://www.putty.org/).
 
 These labs will be much easier to complete if you use a Java IDE (as opposed to a text editor). All Java IDEs have the ability to auto-import dependencies which provides a much smoother development process. These labs do not provide instructions on imports, so if you must use a text editor you will need to refer to the code solutions often for direction on imports.
 
