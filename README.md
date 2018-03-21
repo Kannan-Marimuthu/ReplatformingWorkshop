@@ -1154,7 +1154,7 @@ SET MOVIE_FUN_URL=http://url.to.you.app.on.cf& mvn test
 Once the tests pass, you are done! 
 Congratulations on successfully replatforming the "Movie Fun" App!
 
-# 21 - NFS Mounts (Beta - Bonus Workshop Step)
+# 21 - NFS Mounts
 
 - Lets mount an external nfs filesystem on an App
 
