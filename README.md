@@ -90,7 +90,7 @@ cf push
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/org_quota.jpg)
 
-- Following the example shown below, map a new route to your Chess App by picking a unique name. Using your browser, access the newly mapped route. DO NOT USE ANY "_"  CHARACTERS_.
+- Following the example shown below, map a new route to your Chess App by picking a unique name. Using your browser, access the newly mapped route. DO NOT USE ANY "\_"  CHARACTERS.
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/map_route.jpg)
 
