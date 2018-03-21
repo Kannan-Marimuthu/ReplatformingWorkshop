@@ -90,11 +90,11 @@ cf push
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/org_quota.jpg)
 
-- Now map a new route to your Chess App. Using your browser, access the newly mapped route. 
+- Following the example shown below, map a new route to your Chess App by picking a unique name. Using your browser, access the newly mapped route. 
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/map_route.jpg)
 
-- Now let's take a look at the container(s) running your Chess App. You will need to _ssh_ into _elvmjt025_, a VM that has been loaded with the _CF CLI_ and has permission to ssh into PCF containers. Follow the example shown below. The last step in the sequence is a _watch_ command - leave it running and proceed to the next step.
+- Now let's take a look at the container(s) running your Chess App. You will need to `ssh` into the `elvmjt025` VM. This VM has the _CF CLI_ installed and has permission to `ssh` into PCF containers. Follow the example shown below. The last step in the sequence is a `watch` command that will repeatedly access your Chess App. Leave it running and proceed to the next step.
 
 ````
 ssh your_username@elvmjt025
@@ -110,22 +110,23 @@ vcap@62a2fb26-49ab-492d-4d8e-5b1d:~$ df -h
 vcap@62a2fb26-49ab-492d-4d8e-5b1d:~$ du -d 3 .
 vcap@62a2fb26-49ab-492d-4d8e-5b1d:~$ watch -n 0 curl -k https://your-chess-url.apps.testpcf.nwie.net
 ````
-- The _watch_ command you executed above will keep on accessing your _Chess_ App. Leave it running for now, and access PCF Metrics to see performance details about your App instance(s) and its container(s).
+
+- The `watch` command you executed above will keep on accessing your _Chess_ App. Leave it running for now, and take a look at _Apps Manager > PCF Metrics_ to see performance details about your App instance(s) and container(s).
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/pcf_metrics.jpg)
 
-- With the _watch_ command still active, set-up auto-scaling per the example shown below:
+- With the `watch` command still active, set-up `auto-scaling` per the example shown below:
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/autoscaling.jpg)
 
 - Using Apps Manager, observe how PCF scales the number of App Instances in order to meet the scaling rules you defined.
  
-- Go back to the terminal window where the _watch_ command is running and CTRL-C to stop it, but don't exit the ssh session into the PCF container. Execute the following command:
+- Go back to the terminal window where the `watch` command is running and `CTRL-C` to stop it, but don't exit the `ssh` session into the PCF container. Execute the following command:
 
 ````
 vcap@62a2fb26-49ab-492d-4d8e-5b1d:~$ ps -e | head -n 4
 ````
-- Note the PID (Process ID) of the line that reads `python` and use it to kill the container per the example below:
+- Note the PID (Process ID) of the line that reads `python` and use it to `kill` the container per the example below:
 
 ````
 vcap@c9f68520-d3bc-43fa-78e1-b9b3:~$ ps -e | head -n 4
@@ -135,9 +136,11 @@ vcap@c9f68520-d3bc-43fa-78e1-b9b3:~$ ps -e | head -n 4
      19 ?        00:00:18 diego-sshd
 vcap@c9f68520-d3bc-43fa-78e1-b9b3:~$ kill -9 14
 ````
-- You will be _kicked-out_ of the ssh session into the PCF container. Take a look at your Apps Manager GUI:
+- You will be _kicked-out_ of the ssh session that had been established to your container. Now, take a look at your Apps Manager GUI:
 
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/crashed_but_restarted.jpg)
+
+- You can see from the image shown above that PCF has re-spawned the Chess App that was killed and logged the incident.
 
 - Clean Up
     - CTRL-C and Exit out of the container that was running the _watch_ command.
