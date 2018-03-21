@@ -1153,3 +1153,57 @@ SET MOVIE_FUN_URL=http://url.to.you.app.on.cf& mvn test
 
 Once the tests pass, you are done! 
 Congratulations on successfully replatforming the "Movie Fun" App!
+
+# 21 - NFS Mounts (Beta - Bonus Workshop Step)
+
+- Lets mount an external nfs filesystem on an App
+
+- Create a `nas.json` file with the following content:
+````
+{
+  "share": "ohnalnas1820.nwideweb.net/data1/east_pivotal"
+}
+````
+
+- Execute the following command to create an instance of the NFS Service:
+````
+cf create-service nfs Existing give_it_a_unique_name -c nas.json
+````
+
+- Lets start a new App
+````
+cd \workspace
+git clone https://github.com/rm511130/solar
+cd solar
+cf push
+````
+- Use a browser to check whether the Solar App is running.
+
+- Create a `user.json` file with the following content:
+````
+{
+  "uid": 0,
+  "gid": 0,
+  "mount": "/var/mount1"
+}
+````
+
+- Let's bind the NFS service you created a few minutes ago, to the Solar App.
+````
+cf bind-service solar _use_the_same_unique_name_you_used_before_ -c user.json
+````
+
+- Now let's take a look at the container that is running your Solar App. You will need to `ssh` into the `elvmjt025` VM. This VM has the _CF CLI_ installed and has permission to `ssh` into PCF containers. Follow the example shown below. 
+
+````
+ssh your_username@elvmjt025
+
+your_username@elvmjt025:PROD:~> cf api api.sys.testpcf.nwie.net
+your_username@elvmjt025:PROD:~> cf login
+your_username@elvmjt025:PROD:~> cf ssh solar -i 0
+
+your_username@elvmjt025:PROD:~> mount
+your_username@elvmjt025:PROD:~> cd /var/mount1
+your_username@elvmjt025:PROD:~> cf env solar
+````
+- As you can see, the NAS mount has worked.
