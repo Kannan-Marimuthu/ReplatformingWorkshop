@@ -498,11 +498,11 @@ You will be able to navigate the [home page](http://localhost:8080), but other p
 ![](https://github.com/rm511130/ReplatformingWorkshop/blob/master/localhost8080.jpg)
 
 # 14 - Make MoviesBean injectable
-Let's add more functionality to our Spring Boot app by mapping the setup endpoint. Begin by making the ````MoviesBean```` injectable.
+Let's add more functionality to our Spring Boot app by mapping the setup endpoint. Begin by making the `MoviesBean` injectable.
 
-- Remove the persistence unit specification from the ````@PersistenceContext```` annotation.
+- Remove the persistence unit specification from the `@PersistenceContext` annotation.
 
-- Replace ````@Stateless```` with ````@Repository````:
+- Replace `@Stateless` with `@Repository`:
 ````
 - @Stateless
 + @Repository
@@ -518,7 +518,6 @@ public class MoviesBean {
 MovieBeans.java should now look like this:
 ###### _src/main/java/org/superbiz/moviefun/MoviesBean.java_
 ```java
-src/main/java/org/superbiz/moviefun/MoviesBean.java
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
